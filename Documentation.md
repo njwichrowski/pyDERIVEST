@@ -1,28 +1,19 @@
 # Documentation for pyDERIVEST
 ## ``derivest``
+Estimate the derivative of a function of one variable.
 
-def derivest(fun, x, par = None, **kwargs):
-    """
-    Estimate the derivative of a function of one variable.
-    
-    
-    Arguments:
-        fun : Callable object with signature fun(x, *args) -> float, where x is
-              the (scalar) argument, and args is an optional list of parameters.
-              
-              For increased speed, a vectorized function may be provided, with
-              signature fun(x, *args) -> np.ndarry, where the returned array
-              must have the same shape as the array of argument values.
+#### Signature
+``def derivest(fun, x, par = None, **kwargs)``
+
+#### Arguments
+**fun** : Callable object with signature ``fun(x, *args) -> float``, where ``x`` is the (scalar) argument, and ``args`` is an optional list of parameters. For increased speed, a vectorized function may be provided, with signature ``fun(x, *args) -> np.ndarry``, where the returned array must have the same shape as the array of argument values.
+
+**x** : Scalar or numpy array containing point(s) at which the derivative is requested. If an array is provided, it will not be flattened.
         
-        x : Scalar or numpy array containing point(s) at which the derivative
-            is requested. If an array is provided, it will not be flattened.
-        
-        par : Optional list of parameters to be passed to fun as fun(x, *par).
-              If par is not provided, then fun(x, *[]) is equivalent to fun(x),
-              in which case fun may have signature fun(x) -> float.
+**par** : Optional list of parameters to be passed to ``fun`` as ``fun(x, *par)``. If ``par`` is not provided, then ``fun(x, *[])`` is used, which is equivalent to ``fun(x)``.
         
         
-    Keyword Arguments:
+#### Keyword Arguments:
         deriv_order : Order of the derivative to be estimated. Must be an
                       integer in [1, 2, 3, 4].                     (Default: 1)
         
