@@ -89,3 +89,14 @@ Additional keyword arguments are passed to the internal call to ``derivest``.
         
 **final_delta** : *float*
 > Vector of final step sizes for each partial derivative.
+
+### Example
+    >>>  import derivest, numpy as np
+    >>>  def f(v, *args):
+    ...      '''f(x, y; z) = x**2.0 + y**z'''
+    ...      return v[0]**2.0 + v[1]**args[0]
+    >>>  v = np.array([-1, 0]) # Evaluate at (x, y) = (-1, 0)
+    >>>  d = np.array([ 1, 1]) # in the direction [1, 1].
+    >>>  p = [1.0] # Set parameter value z = 1.
+    >>>  derivest.directional_diff(f, v, d, p)
+    Out: (-0.7071, 1.2478e-13, 0.0002)
