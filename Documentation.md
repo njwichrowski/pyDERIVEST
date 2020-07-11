@@ -50,10 +50,11 @@ Estimate the derivative of a function of one variable.
 > The final overall stepsize chosen by derivest.
 
 ### Example
-    >>>  import derivest, numpy as np
-    >>>  (der, err, delta) = derivest.derivest(np.exp, 1.0)
+    >>>  import numpy as np
+    >>>  from derivest import derivest
+    >>>  (der, err, delta) = derivest(np.exp, 1.0)
     >>>  print(der, "|", np.exp(1.0) - der)
-    Out: 2.7182818284590344 | 1.0658141036401503e-14
+    Out: 2.7182818284590438 | 1.3322676295501878e-15
         
 ## ``directional_diff``
 ``directional_diff(fun, x, d, par = None, normalize = True, **kwargs)``
@@ -98,5 +99,48 @@ Additional keyword arguments are passed to the internal call to ``derivest``.
     >>>  v = np.array([-1, 0]) # Evaluate at (x, y) = (-1, 0)
     >>>  d = np.array([ 1, 1]) # in the direction [1, 1].
     >>>  p = [1.0] # Set parameter value z = 1.
-    >>>  derivest.directional_diff(f, v, d, p)
-    Out: (-0.7071, 1.2478e-13, 0.0002)
+    >>>  (der, err, delta) = derivest.directional_diff(f, v, d, p)
+    >>>  print(der, "|", err)
+    Out: -0.7071 | 5.4102e-15
+
+## ``gradest``
+``gradest(fun, x, par = None, **kwargs)``
+
+Estimate the gradient vector of an analytical function of n variables.
+    
+Uses the derivest method to provide both an estimate of each component of the gradient vector and error estimates for each.
+
+### Arguments
+**fun**: *callable* ``fun(x, *args) -> float``
+> The function to be numerically differentiated; x is the (vector) argument, and args is an optional list of parameter values.
+
+**x** : *ndarray*
+> Vector location at which to compute the gradient. If x has more than one axis, then fun is assumed to be a function of ``np.prod(x.shape)`` variables, but it is not flattened.
+        
+**par** : *iterable*, optional
+> List of parameter values to be passed to fun as ``fun(x, *par)``. If par is not provided, then ``fun(x, *[])`` is used, which is equivalent to ``fun(x)``.
+        
+Additional keyword arguments are passed to the internal call to ``derivest``.
+
+### Returns
+**der** : *float*
+> Estimate of the partial derivatives of fun at location x.
+        
+**err** : *float*
+> Error estimates of the partial derivatives.
+        
+**final_delta** : *float*
+> The final overall stepsize chosen for each derivative.
+
+### Example
+    >>>  import derivest, numpy as np
+    >>>  def rosenbrock(x, *args):
+    ...      if not args: args = [100.0]
+    ...      return (x[0] - 1.0)**2.0 + args[0]*(x[1] - x[0]**2.0)**2.0
+    >>>  (der, err, delta) = derivest.gradest(rosenbrock, [1.0, 1.0])
+    >>>  print(np.c_[der, err, delta].T)
+    Out: [[5.00726717e-16 1.23358038e-16]
+          [4.70191608e-15 1.16400001e-15]
+          [1.90734682e-06 1.90734682e-06]]
+    >>>  derivest.gradest(rosenbrock, [0.5, 1.0])[0]
+    Out: array([-151.,  150.])
