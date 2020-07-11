@@ -1,8 +1,11 @@
 # Documentation for pyDERIVEST
 
 ## Contents
-[derivest](#derivest)
-[directional_diff](#directional_diff)
+Differentiation of Scalar Functions: [derivest](#derivest)
+
+Directional Derivatives of Scalar Functions: [directional_diff](#directional_diff)
+
+Gradients of Scalar Functions: [gradest](#gradest)
 
 
 ## ``derivest``
