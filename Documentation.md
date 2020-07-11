@@ -1,10 +1,11 @@
 # Documentation for pyDERIVEST
 
 ## Contents
-|-------------------------------------|-------------------------------------------------|
-|[derivest](#derivest)                |Differentiation of ``f:R->R``                    |
-|[directional_diff](#directional_diff)|Directional Derivatives of ``f:R<sup>n</sup>->R``|
-|[gradest](#gradest)                  |Gradients of ``f:R<sup>n</sup>->R``              |
+|                                     |                                                         |
+|-------------------------------------|---------------------------------------------------------|
+|[derivest](#derivest)                |Differentiation of ``f:R->R``                            |
+|[directional_diff](#directional_diff)|Directional Derivatives of ``f:R``<sup>``n``</sup>``->R``|
+|[gradest](#gradest)                  |Gradients of ``f:R``<sup>``n``</sup>``->R``              |
 
 ## ``derivest``
 ``derivest.derivest(fun, x, par = None, **kwargs)``
