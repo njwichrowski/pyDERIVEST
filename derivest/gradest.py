@@ -42,9 +42,9 @@ def gradest(fun, x, par = None, **kwargs):
       ...      return (x[0] - 1.0)**2.0 + args[0]*(x[1] - x[0]**2.0)**2.0
       >>>  (der, err, delta) = derivest.gradest(rosenbrock, [1.0, 1.0])
       >>>  print(np.c_[der, err, delta].T)
-      Out: [[5.00726717e-16 1.23358038e-16]
-            [4.70191608e-15 1.16400001e-15]
-            [1.90734682e-06 1.90734682e-06]]
+      Out: [[5.0073e-16 1.2336e-16]
+            [4.7019e-15 1.1640e-15]
+            [1.9073e-06 1.9073e-06]]
       >>>  derivest.gradest(rosenbrock, [0.5, 1.0])[0]
       Out: array([-151.,  150.])
     """

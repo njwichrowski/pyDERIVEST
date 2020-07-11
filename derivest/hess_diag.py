@@ -36,13 +36,13 @@ def hess_diag(fun, x, par = None, **kwargs):
     
     
     Example:
-      >>>  import derivest, numpy as np
+      >>>  from derivest import hess_diag
       >>>  f = lambda x: x[0] + x[1]**2.0 + x[2]**3.0
-      >>>  (HD, err, fd) = derivest.hess_diag(f, [1, 2, 3])
+      >>>  (HD, err, fd) = hess_diag(f, [1, 2, 3])
       >>>  HD
       Out: array([ 0.,  2., 18.])
       >>>  err
-      Out: array([0.00000000e+00, 1.02127764e-11, 5.66829319e-12])
+      Out: array([0.0000e+00, 1.0213e-11, 5.6683e-12])
     """
     ##### PROCESS ARGUMENTS AND CHECK FOR VALIDITY #####
     if kwargs.pop("deriv_order", 2) != 2:
