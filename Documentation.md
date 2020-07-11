@@ -1,6 +1,10 @@
 # Documentation for pyDERIVEST
 
-[derivest1](#derivest2)
+## Contents
+[derivest](#derivest)
+[directional_diff](#directional_diff)
+
+
 ## ``derivest``
 ``derivest.derivest(fun, x, par = None, **kwargs)``
 
