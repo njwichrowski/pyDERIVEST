@@ -13,12 +13,12 @@ def hess_diag(fun, x, par = None, **kwargs):
     diagonal elements of the Hessian matrix are needed.
     
     Arguments:
-        fun : Callable object with signature fun(x, *args) -> float, where x is
-              the (vector) argument, and args is an optional list of parameters.
+        fun : Callable object with signature fun(x, *args) -> float, with x the
+              (vector) argument, and args an optional list of parameters.
         
-        x : Vector location at which to compute the gradient. If x has more than
-            one axis, then it is flattened and fun is assumed to be a function
-            of np.prod(x.shape) variables.
+        x : Vector location at which to compute the gradient. If x has more
+            than one axis, then it is flattened and fun is assumed to be a
+            function of np.prod(x.shape) variables.
         
         par : Optional list of parameters to be passed to fun as fun(x, *par).
               If par is not provided, then fun(x, *[]) is equivalent to fun(x),
@@ -45,12 +45,18 @@ def hess_diag(fun, x, par = None, **kwargs):
       Out: array([0.00000000e+00, 1.02127764e-11, 5.66829319e-12])
     """
     ##### PROCESS ARGUMENTS AND CHECK FOR VALIDITY #####
-    if kwargs.pop("deriv_order", 2) != 2: raise ValueError("hess_diag() can only perform second-order differentiation.")
-    if kwargs.pop("vectorized", False): raise ValueError("hess_diag() is incompatible with vectorized evaluation.")
+    if kwargs.pop("deriv_order", 2) != 2:
+        raise ValueError("hess_diag() can only perform "
+                         "second-order differentiation.")
+    if kwargs.pop("vectorized", False):
+        raise ValueError("hess_diag() is incompatible with "
+                         "vectorized evaluation.")
     kwargs["deriv_order"] = 2 # Force second-order differentiation
     kwargs["vectorized"] = False # and non-vectorized evaluation.
-    if isinstance(x, list): x = np.array(x)
-    if par is None: par = []
+    if isinstance(x, list):
+        x = np.array(x)
+    if par is None:
+        par = []
     
     ##### MAKE ARRAYS TO HOLD VALUES OF INTEREST #####
     x = x.flatten().astype(np.float64)
