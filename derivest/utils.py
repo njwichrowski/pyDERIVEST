@@ -3,19 +3,21 @@
 
 """
 
-__all__ = ["build_kwargs", "diag_tile", "evec", "fdamat", "loop_eval", "outlier_bounds", "replace_element", "replace_elements", "romb_extrap"]
+__all__ = ["build_kwargs", "diag_tile", "evec", "fdamat", "loop_eval",
+           "outlier_bounds", "replace_element", "replace_elements",
+           "romb_extrap"]
 
 from scipy.special import factorial
 from scipy.stats import iqr
 import numpy as np
 import warnings
 
-def build_kwargs(COL = {}, CON = {}, DIS = {}, INT = {}):
+def build_kwargs(COL = None, CON = None, DIS = None, INT = None):
     """
-    Construct a dictionary of keyword arguments and values, for use in ensemble.
+    Construct a dictionary of keyword arguments, values. For use in ensemble.
     
     
-    Arguments: All four parameters must be dictionaries, with keys corresponding
+    Arguments: All four parameters must be dictionaries, keys corresponding
     to the desired keyword arguments for the returned dictionary. Values for
     each key are determined on the basis of which parameter contains them:
         
@@ -24,8 +26,8 @@ def build_kwargs(COL = {}, CON = {}, DIS = {}, INT = {}):
         
         CON : Constant values; use a provided, fixed value.
         
-        DIS : Distributions objects; use an object's rvs() method, in the manner
-              of scipy.stats rv_ distributions, to generate a value.
+        DIS : Distributions objects; use an object's rvs() method, in the man-
+              ner of scipy.stats rv_ distributions, to generate a value.
         
         INT : Intervals; choose a value uniformly on an interval defined by
               lower and upper bounds.
@@ -36,21 +38,30 @@ def build_kwargs(COL = {}, CON = {}, DIS = {}, INT = {}):
     
     
     Example:
-      >>>  import derivest
       >>>  from scipy.stats import lognorm
+      >>>  import numpy as np
+      >>>  np.random.seed(0)
+      >>>  import derivest
       >>>  COL = {"method_order": [2, 4]}
       >>>  CON = {"deriv_order": 2}
       >>>  DIS = {"max_step": lognorm(2.0)}
       >>>  INT = {"step_ratio": (1.1, 3.0)}
       >>>  kw = derivest.build_kwargs(COL, CON, DIS, INT)
       >>>  print(kw)
-      Out: {'method_order': 4, 'deriv_order': 2, 'max_step': 0.1480, 'step_ratio': 1.5413}
+      Out: {'method_order': 2, 'deriv_order': 2,
+            'max_step': 9.4460, 'step_ratio': 2.7301}
       >>>  print(derivest.build_kwargs(COL, CON, DIS, INT))
-      Out: {'method_order': 2, 'deriv_order': 2, 'max_step': 1.9204, 'step_ratio': 1.6793}
-      >>>  derivest.derivest(lambda x: x**2.0, 1.0, **kw)
-      Out: 1.999999999999703
+      Out: {'method_order': 4, 'deriv_order': 2,
+            'max_step': 1.8324, 'step_ratio': 1.9049}
+      >>>  derivest.derivest(lambda x: x**2.0, 1.0, **kw)[0]
+      Out: 2.0000000000000004
     """
-    d = {}
+    if COL is None: COL = dict()
+    if CON is None: CON = dict()
+    if DIS is None: DIS = dict()
+    if INT is None: INT = dict()
+    
+    d = dict()
     for key in COL: # Collections of items.
         x = COL[key]
         d[key] = x[np.random.randint(len(x))]
@@ -89,13 +100,16 @@ def diag_tile(vec, size, flatten = False, modulo = False):
     # Check input shape, and flatten if allowed:
     if len(vec.shape) > 1:
         if flatten: vec = vec.flatten()
-        else: raise ValueError("Specify 'flatten = True' to flatten multi-dimensional arrays.")
+        else: raise ValueError("Specify 'flatten = True' to flatten "
+                               "multi-dimensional arrays.")
     
     # Build the tiled array:
-    arrs = np.meshgrid(*[np.arange(x) for x in size], indexing = "ij") # List of arrays corresponding to each index.
-    idx = np.sum(np.array(arrs), axis = 0) # Compute sum of arrays contained in arrs.
-    if modulo: return vec[idx % vec.size] # Build array by viewing into original vector.
-    elif vec.size <= sum(size) - len(size): raise ValueError("Provided vector is too short (%d) for shape %s." % (vec.size, size))
+    arrs = np.meshgrid(*[np.arange(x) for x in size], indexing = "ij")
+    idx = np.sum(np.array(arrs), axis = 0)
+    if modulo: return vec[idx % vec.size]
+    elif vec.size <= sum(size) - len(size):
+        raise ValueError("Provided vector is too short "
+                         "(%d) for shape %s." % (vec.size, size))
     else: return vec[idx]
 
 def evec(dim, entry, value = 1.0, shape = None):
@@ -110,12 +124,13 @@ def evec(dim, entry, value = 1.0, shape = None):
         
         value : Value of the non-zero entry. (Default: 1.0)
         
-        shape : Tuple specifying the desired shape for the vector. If specified,
+        shape : Tuple specifying the desired vector shape. If specified,
                 entry refers to the flattened index.     (Default: None --> 1D)
     """
     e = np.zeros(dim)
     e[entry] = value
-    if shape is not None: e = np.reshape(e, shape)
+    if shape is not None:
+        e = np.reshape(e, shape)
     return e
 
 def fdamat(sr, parity, num_terms):
@@ -150,7 +165,7 @@ def fdamat(sr, parity, num_terms):
     elif parity == 2:
         c = 1.0/factorial(2*(vec + 1))
         return c[j]*sr_inv**(i*(2*j + 2))
-    else: raise ValueError("fdamat() got an invalid parity: %s" % parity)
+    raise ValueError("fdamat() got an invalid parity: %s" % parity)
 
 def loop_eval(fun, x, par = None):
     """
@@ -158,8 +173,8 @@ def loop_eval(fun, x, par = None):
     
     
     Arguments:
-        fun : Callable object with signature fun(x, *args) -> float, where x is
-              the (vector) argument, and args is an optional list of parameters.
+        fun : Callable object with signature fun(x, *args) -> float, with x the
+              (vector) argument and args an optional list of parameters.
         
         x : Array of scalar values at which to evaluate fun.
         
@@ -169,8 +184,11 @@ def loop_eval(fun, x, par = None):
     """
     x_flat = x.flatten()
     fx = np.zeros(x.size)
-    if par is None: par = [] # Avoid TypeError from attempting *None when par not provided.
-    for i in range(x.size): fx[i] = fun(x_flat[i], *par)
+    if par is None:
+        par = [] # Avoid TypeError from attempting *None if par not given.
+    
+    for i in range(x.size):
+        fx[i] = fun(x_flat[i], *par)
     return np.reshape(fx, x.shape)
 
 def outlier_bounds(sample, scale = 1.5, **kwargs):
@@ -188,9 +206,9 @@ def outlier_bounds(sample, scale = 1.5, **kwargs):
                     upper = Q3 + scale*IQR
         
         Additional keyword arguments (except "keepdims") are passed to
-        scipy.stats.iqr and, if recognized thereby, to numpy.percentile as well.
-        If "rng" is provided for computing the IQR, it is also used for the base
-        points, in place of the proper quartiles (Q1 and Q3).
+        scipy.stats.iqr and, if recognized thereby, also to numpy.percentile.
+        If "rng" is provided for computing the IQR, it is also used for the
+        base points, in place of the proper quartiles (Q1 and Q3).
     
     
     Returns a numpy.ndarray with the computed bounds. If no axis was specified,
@@ -203,18 +221,27 @@ def outlier_bounds(sample, scale = 1.5, **kwargs):
         try:
             ax = int(kwargs["axis"]) % len(sample.shape)
             kwargs["axis"] = ax
-        except TypeError: raise ValueError("Could not coerce '%s' into an int." % kwargs["axis"])
-        except ValueError: raise ValueError("Could not convert '%s' to an int." % kwargs["axis"])
+        except TypeError:
+            raise ValueError("Could not coerce '%s' into an int."
+                             % kwargs["axis"])
+        except ValueError:
+            raise ValueError("Could not convert '%s' to an int."
+                             % kwargs["axis"])
         keepdims = True
     else: keepdims = False
+    
     kwargs["keepdims"] = keepdims
     iqr_ = iqr(sample, **kwargs) # Compute interquartile range.
-    qile_kw = {key:kwargs[key] for key in kwargs if key in ["axis", "interpolation", "keepdims"]}
+    qile_kw = {key:kwargs[key]
+               for key in kwargs
+               if key in ["axis", "interpolation", "keepdims"]}
     r = np.array([-scale, scale])
     
     # Compute the quartiles themselves (or surrogate):
-    if "rng" in kwargs: Q = kwargs["rng"]
-    else: Q = (25.0, 75.0)
+    if "rng" in kwargs:
+        Q = kwargs["rng"]
+    else:
+        Q = (25.0, 75.0)
     qile = np.percentile(sample, Q, **qile_kw).T
     if keepdims:
         iqr_ = iqr_.T # Reverse order of axes.
@@ -234,11 +261,14 @@ def replace_element(vec, idx, val, dtype = np.float64):
         
         val : The new value for vec[idx].
     
-        dtype : Data type to which the copied array should be converted, or None
-                to leave in the original format.       (Default: numpy.float64)
+        dtype : Data type to which the copied array should be converted, or
+                None to leave in the original format.  (Default: numpy.float64)
     """
-    if dtype is None: vec = np.array(vec) # Convert list to array or copy array.
-    else: vec = np.array(vec, dtype = dtype) # Change dtype if requested.
+    if dtype is None:
+        vec = np.array(vec) # Convert list to array or copy array.
+    else:
+        vec = np.array(vec, dtype = dtype) # Change dtype if requested.
+    
     vec[idx] = val
     return vec
 
@@ -254,13 +284,18 @@ def replace_elements(vec, idxs, vals, dtype = np.float64):
         
         vals : Iterable of new values for corresponding entries.
     
-        dtype : Data type to which the copied array should be converted, or None
-                to leave in the original format.       (Default: numpy.float64)
+        dtype : Data type to which the copied array should be converted, or
+                None to leave in the original format.  (Default: numpy.float64)
     """
-    if len(idxs) != len(vals): raise ValueError("Lists of indices, values must have the same length.")
-    if dtype is None: vec = np.array(vec) # Convert list to array or copy array.
-    else: vec = np.array(vec, dtype = dtype) # Change dtype if requested.
-    for (i, v) in zip(idxs, vals): vec[i] = v
+    if len(idxs) != len(vals):
+        raise ValueError("Lists of indices, values must have the same length.")
+    if dtype is None:
+        vec = np.array(vec) # Convert list to array or copy array.
+    else:
+        vec = np.array(vec, dtype = dtype) # Change dtype if requested.
+    
+    for (i, v) in zip(idxs, vals):
+        vec[i] = v
     return vec
 
 def romb_extrap(sr, der_init, expon, compute_amp = False):
@@ -287,26 +322,36 @@ def romb_extrap(sr, der_init, expon, compute_amp = False):
         
         err_est : Error estimates.
         
-        amp : Computed noise amplification factor (only if compute_amp == True).
+        amp : Computed noise amplification factor (if compute_amp == True).
     """
     # Guarantee that expon is a one-dimensional array of floats:
-    if isinstance(expon, list): expon = np.array(expon).flatten()
-    elif not isinstance(expon, np.ndarray): expon = np.array([float(expon)])
-    else: expon = expon.flatten()
+    if isinstance(expon, list):
+        expon = np.array(expon).flatten()
+    elif not isinstance(expon, np.ndarray):
+        expon = np.array([float(expon)])
+    else:
+        expon = expon.flatten()
     num_expon = expon.size
     
     # Construct the Romberg matrix:
     sr_inv = 1.0/sr
     rmat = np.ones((num_expon + 2, num_expon + 1))
-    if num_expon > 3: warnings.warn("Ordinary use of derivest() should not need more than three terms to be cancelled.", RuntimeWarning)
+    if num_expon > 3:
+        warnings.warn("Ordinary use of derivest() should not need more than "
+                      "three terms to be cancelled.", RuntimeWarning)
     elif num_expon > 0:
         for i in range(1, num_expon + 2):
-            rmat[i, np.arange(1, num_expon + 1)] = sr_inv**(i*expon)# Compute QR factorization for extrapolation and uncertainty estimates:
+            # Compute QR factorization, uncertainty estimates:
+            rmat[i, np.arange(1, num_expon + 1)] = sr_inv**(i*expon)
     (Q, R) = np.linalg.qr(rmat)
     
     # Extrapolate to a zero step-size:
-    rhs = diag_tile(der_init, (num_expon + 2, max(1, der_init.size - num_expon - 2)), flatten = True)
-    coeffs = np.linalg.lstsq(R, Q.T @ rhs, rcond = None)[0] # Compute Romberg coefficients by solving linear systems.
+    rhs = diag_tile(der_init, (num_expon + 2,
+                               max(1, der_init.size - num_expon - 2)),
+                    flatten = True)
+    
+    # Compute Romberg coefficients by solving linear systems:
+    coeffs = np.linalg.lstsq(R, Q.T @ rhs, rcond = None)[0]
     der_romb = coeffs[0,:] # Extract derivative estimates.
     
     # Approximate the uncertainty:
