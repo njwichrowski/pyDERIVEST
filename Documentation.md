@@ -263,3 +263,66 @@ Estimate the Jacobian matrix of a vector-valued function of ``n`` variables.
                 [-1.81859485, -0.90929743,  0.        ]])
     >>>  -np.sin(2.0)
     Out: -0.9092974268256817
+
+## ``ensemble``
+``derivest.ensemble(method, fun, x, par = None, N = 10, weights = "uniform", eps = 1e-15, method_kwargs = None, ob_kwargs = None, **kwargs)``
+
+Compute multiple approximations of a derivative and aggregate the results. Checks the results for outliers, removing any that are found, and uses the remaining estimates to form a single approximation to the derivative.
+
+### Arguments
+**method**: *str*
+> String specifying the name of the method to use (e.g., ``"derivest"``) or the method itself (``derivest.derivest``).
+
+**fun**: *callable* ``fun(x, *args) -> np.ndarray``
+> Callable object that evaluates the function of interest.
+
+**x** : *ndarray*
+> Array containing the point at which to differentiate.
+        
+**par** : *iterable*, optional
+> List of parameter values to be passed to ``fun`` as ``fun(x, *par)``. If ``par`` is not provided, then ``fun(x, *[])`` is used, which is equivalent to calling the function with only the argument: ``fun(x)``.
+
+**N** : *int*, Default: ``10``
+> The number of evaluations (at least 3) to use to form the aggregated estimate.
+
+**weights** : *str*, Default: ``"uniform"``
+> Method used to combine the ``N`` estimates into one result. Must take one of the following values:
+|String          |Description of Method                                                                                                               |
+|----------------|------------------------------------------------------------------------------------------------------------------------------------|
+|``"uniform"``   |Unweighted average of all non-outliers.                                                                                             |
+|``"error"``     |Average of non-outliers, weighted by the reciprocal of the error estimates on an entry-wise basis (relevant for non-scalar outputs).|
+|``"mean_error"``|Average of non-outliers, weighted by the reciprocal of the mean error estimates for each of the ``N`` evaluations.                  |
+|``"max_error"`` |Average of non-outliers, weighted by the reciprocal of the maximum error estimates for each of the ``N`` evaluations.               |
+|``"best"``      |Selects the estimate with the smallest approximated error.                                                                          |
+|``"best_mean"   |Selects the estimate with the smallest mean (over the result entries) approximated error.                                           |
+|``"best_max     |Selects the estimate with the smallest maximum (over the result entries) approximated error.                                        |
+
+**eps** : *float*, Default: ``1e-15``
+> Positive value to serve as a precision buffer. When computing weighted averages of non-outlier results, any error estimates less than ``eps`` will be replaced with ``eps``. A ``ValueError`` is raised if ``eps`` is smaller than machine precision (*i.e.*, if ``1.0 + eps <= 1.0``). In most cases, machine precision is approximately ``2.23e-16``.
+
+**method_kwargs** : *dict*, optional
+> Dictionary in which the keys are accepted keyword arguments for the method to be used, and the values specify how to determine the keyword values for each of the ``N`` times the method is called. If the value for a key ...
+>   [a] has an ``rvs()`` method for generating random variates
+>   [b] is a list
+>   [c] is a tuple
+>   [d] fails to satisfy any of the above conditions,
+> ... then the value of the corresponding keyword argument is determined for each method call by (resp.) ...
+>   [a] calling ``rvs()`` to obtain a single (scalar) value
+>   [b] picking uniformly at random from the list's elements
+>   [c] sampling uniformly at random from the interval extending between the ``0`` and ``1`` elements of the tuple
+>   [d] always using the provided value.
+> Note that it is a computational waste to use only [d] (constant-valued arguments) in ``method_kwargs``, since doing so will merely compute an approximate derivative ``N`` times at the exact same conditions.
+>                   
+> By default, ``method_kwargs`` varies the ``"max_step"`` parameter according to a log-normal distribution.
+
+**ob_kwargs** : *dict*, optional
+> Dictionary of key-value pairs to pass to the utility function ``outlier_bounds`` when determining which estimates constitute outliers.
+
+If using ``directional_diff``, then ``d`` and ``normalize`` are taken from the additional keyword arguments (``**kwargs``). If using ``derivest``, then ``deriv_order`` may be specified in ``**kwargs`` as well.
+
+### Returns
+**deriv** : *float*
+> Estimate of the requested derivative of ``fun`` at location ``x``.
+        
+**error** : *float*
+> Corresponding error estimate(s).
