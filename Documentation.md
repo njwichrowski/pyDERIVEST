@@ -302,23 +302,21 @@ Compute multiple approximations of a derivative and aggregate the results. Check
 > Positive value to serve as a precision buffer. When computing weighted averages of non-outlier results, any error estimates less than ``eps`` will be replaced with ``eps``. Raises a ``ValueError`` if ``eps`` is smaller than machine precision (*i.e.*, if ``1.0 + eps <= 1.0``). In most cases, machine precision is approximately ``2.23e-16``.
 
 **method_kwargs** : *dict*, optional
-> Dictionary in which the keys are accepted keyword arguments for the method to be used, and the values specify how to determine the keyword values for each of the ``N`` times the method is called. If the value for a key ...
+> Dictionary in which the keys are accepted keyword arguments for the method to be used, and the values specify how to determine the keyword values for each of the ``N`` times the method is called. If the value for a key
 
-1. has an ``rvs()`` method for generating random variates
-2. is a list
-3. is a tuple
+1. has an ``rvs()`` method for generating random variates,
+2. is a list,
+3. is a tuple, or
 4. fails to satisfy any of the above conditions,
 
-> ... then the value of the corresponding keyword argument is determined for each method call by (resp.) ...
+> then the value of the corresponding keyword argument is determined for each method call by (resp.)
 
-1. calling ``rvs()`` to obtain a single (scalar) value
-2. picking uniformly at random from the list's elements
-3. sampling uniformly at random from the interval extending between the ``0`` and ``1`` elements of the tuple
+1. calling ``rvs()`` to obtain a single (scalar) value,
+2. picking uniformly at random from the list's elements,
+3. sampling uniformly at random from the interval extending between the ``0`` and ``1`` elements of the tuple, or
 4. always using the provided value.
 
-> Note that it is a computational waste to use only [d] (constant-valued arguments) in ``method_kwargs``, since doing so will merely compute an approximate derivative ``N`` times at the exact same conditions.
-                   
-> By default, ``method_kwargs`` varies the ``"max_step"`` parameter according to a log-normal distribution.
+> Note that it is a computational waste to use only [d] (constant-valued arguments) in ``method_kwargs``, since doing so will merely compute an approximate derivative ``N`` times at the exact same conditions. By default, ``method_kwargs`` varies the ``"max_step"`` parameter according to a log-normal distribution.
 
 **ob_kwargs** : *dict*, optional
 > Dictionary of key-value pairs to pass to the utility function ``outlier_bounds`` when determining which estimates constitute outliers.
