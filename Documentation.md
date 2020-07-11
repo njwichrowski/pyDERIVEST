@@ -1,12 +1,9 @@
 # Documentation for pyDERIVEST
 
 ## Contents
-Differentiation of Scalar Functions: [derivest](#derivest)
-
-Directional Derivatives of Scalar Functions: [directional_diff](#directional_diff)
-
-Gradients of Scalar Functions: [gradest](#gradest)
-
+|[derivest](#derivest)                |Differentiation of ``f:R->R``                    |
+|[directional_diff](#directional_diff)|Directional Derivatives of ``f:R<sup>n</sup>->R``|
+|[gradest](#gradest)                  |Gradients of ``f:R<sup>n</sup>->R``              |
 
 ## ``derivest``
 ``derivest.derivest(fun, x, par = None, **kwargs)``
