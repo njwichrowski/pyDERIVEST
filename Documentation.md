@@ -304,17 +304,17 @@ Compute multiple approximations of a derivative and aggregate the results. Check
 **method_kwargs** : *dict*, optional
 > Dictionary in which the keys are accepted keyword arguments for the method to be used, and the values specify how to determine the keyword values for each of the ``N`` times the method is called. If the value for a key ...
 
-a. has an ``rvs()`` method for generating random variates
-b. is a list
-c. is a tuple
-d. fails to satisfy any of the above conditions,
+1. has an ``rvs()`` method for generating random variates
+2. is a list
+3. is a tuple
+4. fails to satisfy any of the above conditions,
 
 > ... then the value of the corresponding keyword argument is determined for each method call by (resp.) ...
 
-a. calling ``rvs()`` to obtain a single (scalar) value
-b. picking uniformly at random from the list's elements
-c. sampling uniformly at random from the interval extending between the ``0`` and ``1`` elements of the tuple
-d. always using the provided value.
+1. calling ``rvs()`` to obtain a single (scalar) value
+2. picking uniformly at random from the list's elements
+3. sampling uniformly at random from the interval extending between the ``0`` and ``1`` elements of the tuple
+4. always using the provided value.
 
 > Note that it is a computational waste to use only [d] (constant-valued arguments) in ``method_kwargs``, since doing so will merely compute an approximate derivative ``N`` times at the exact same conditions.
                    
