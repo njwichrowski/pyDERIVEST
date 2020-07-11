@@ -12,8 +12,8 @@ def directional_diff(fun, x, d, par = None, normalize = True, **kwargs):
     
     
     Arguments:
-        fun : Callable object with signature fun(x, *args) -> float, where x is
-              the (vector) argument, and args is an optional list of parameters.
+        fun : Callable object with signature fun(x, *args) -> float, with x the
+              (vector) argument, and args an optional list of parameters.
         
         x : Vector location at which to differentiate fun. If x has more than
             one axis, then fun is assumed to be a function of np.prod(x.shape)
@@ -48,21 +48,31 @@ def directional_diff(fun, x, d, par = None, normalize = True, **kwargs):
       >>>  v = np.array([-1, 0]) # Evaluate at (x, y) = (-1, 0)
       >>>  d = np.array([ 1, 1]) # in the direction [1, 1].
       >>>  p = [1.0] # Set parameter value z = 1.
-      >>>  derivest.directional_diff(f, v, d, p)
-      Out: (-0.7071, 1.2478e-13, 0.0002)
+      >>>  (der, err, delta) = derivest.directional_diff(f, v, d, p)
+      >>>  print(der, "|", err)
+      Out: -0.7071 | 5.4102e-15
     """
     ##### PROCESS ARGUMENTS AND CHECK FOR VALIDITY #####
-    if kwargs.pop("deriv_order", 1) != 1: raise ValueError("directional_diff() can only perform first-order differentiation.")
-    if kwargs.pop("vectorized", False): raise ValueError("directional_diff() is incompatible with vectorized evaluation.")
+    if kwargs.pop("deriv_order", 1) != 1:
+        raise ValueError("directional_diff() can only perform "
+                         "first-order differentiation.")
+    if kwargs.pop("vectorized", False):
+        raise ValueError("directional_diff() is incompatible with "
+                         "vectorized evaluation.")
     kwargs["deriv_order"] = 1 # Force first-order differentiation
     kwargs["vectorized"] = False # and non-vectorized evaluation.
-    if isinstance(x, list): x = np.array(x) # Avoid AttributeError from x.shape if given a list.
-    if isinstance(d, list): d = np.array(d)
-    d = d.astype(np.float64) # Avoid TypeError from trying to /= on an array of integers.
-    if par is None: par = [] # Avoid TypeError from attempting *None when par not provided.
-    if x.shape != d.shape: raise ValueError("Shapes must match. Got x -> %s and d -> %s" % (x.shape, d.shape))
-    if np.allclose(d, np.zeros_like(d)): raise ValueError("Direction vector is numerically zero.")
-    if normalize: d /= np.sqrt(np.sum(d**2.0)) # Normalize direction.
+    if isinstance(x, list):
+        x = np.array(x) # Avoid AttributeError from x.shape if given a list.
+    d = np.array(d, dtype = np.float64)
+    if par is None:
+        par = [] # Avoid TypeError from attempting *None when par not provided.
+    if x.shape != d.shape:
+        raise ValueError("Shapes must match. Got x -> %s and d -> %s"
+                         % (x.shape, d.shape))
+    if np.allclose(d, np.zeros_like(d)):
+        raise ValueError("Direction vector is numerically zero.")
+    if normalize:
+        d /= np.sqrt(np.sum(d**2.0)) # Normalize direction.
     
     ##### COMPUTE DIRECTIONAL DERIVATIVE #####
     func = lambda t: fun(x + t*d, *par)
