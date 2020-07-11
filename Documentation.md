@@ -1,4 +1,6 @@
 # Documentation for pyDERIVEST
+
+[derivest](#derivest)
 ## ``derivest``
 ``derivest.derivest(fun, x, par = None, **kwargs)``
 
