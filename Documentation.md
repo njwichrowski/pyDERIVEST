@@ -287,6 +287,7 @@ Compute multiple approximations of a derivative and aggregate the results. Check
 
 **weights** : *str*, Default: ``"uniform"``
 > Method used to combine the ``N`` estimates into one result. Must take one of the following values:
+
 |String          |Description of Method                                                                                                               |
 |----------------|------------------------------------------------------------------------------------------------------------------------------------|
 |``"uniform"``   |Unweighted average of all non-outliers.                                                                                             |
