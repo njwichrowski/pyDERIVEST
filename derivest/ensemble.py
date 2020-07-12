@@ -56,7 +56,8 @@ def ensemble(method, fun, x, par = None, N = 10, weights = "uniform",
                   "max_error"  : Average of non-outliers, weighted by the reci-
                                  procal of the maximum error estimates for each
                                  of the N evaluations.
-                  "best"       : .
+                  "best"       : Selects the estimate with the smallest
+                                 approximated error.
                   "best_mean"  : Selects the estimate with the smallest mean
                                  (over the result entries) approximated error.
                   "best_max    : Selects the estimate with the smallest maximum
