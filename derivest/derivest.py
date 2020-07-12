@@ -123,7 +123,7 @@ def derivest(fun, x, par = None, **kwargs):
         raise ValueError("Cannot perform a 'central' method of odd order.")
     elif p["style"] != "central":
         warnings.warn("Using style = '%s' is highly unstable and not "
-                      "recommended." % p["central"], RuntimeWarning)
+                      "recommended." % p["style"], RuntimeWarning)
     p["step_ratio"] = float(p["step_ratio"])
     if par is None:
         par = [] # Avoid TypeError from attempting *None when par not provided.
