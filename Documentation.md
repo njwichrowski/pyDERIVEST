@@ -1,11 +1,15 @@
 # Documentation for pyDERIVEST
 
 ## Contents
-|                                     |                                                                                                         |
-|-------------------------------------|---------------------------------------------------------------------------------------------------------|
-|[derivest](#derivest)                |Differentiation of <img src="https://render.githubusercontent.com/render/math?math=R%5Cto%20R">          |
-|[directional_diff](#directional_diff)|Directional Derivatives of <img src="https://render.githubusercontent.com/render/math?math=R^n%5Cto%20R">|
-|[gradest](#gradest)                  |Gradients of <img src="https://render.githubusercontent.com/render/math?math=R^n%5Cto%20R">              |
+|                                     |                                                                                                                          |
+|-------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
+|[derivest](#derivest)                |Differentiation of <img src="https://render.githubusercontent.com/render/math?math=f%3AR%5Cto%20R">                       |
+|[directional_diff](#directional_diff)|Directional Derivatives of <img src="https://render.githubusercontent.com/render/math?math=f%3AR%5En%5Cto%20R">           |
+|[gradest](#gradest)                  |Gradients of <img src="https://render.githubusercontent.com/render/math?math=f%3AR%5En%5Cto%20R">                         |
+|[hess_diag](#hess_diag)              |Unmixed Second Partial Derivatives of <img src="https://render.githubusercontent.com/render/math?math=f%3AR%5En%5Cto%20R">|
+|[hessian](#hessian)                  |Hessian Matrix of <img src="https://render.githubusercontent.com/render/math?math=f%3AR%5En%5Cto%20R">                    |
+|[jacobian](#jacobian)                |Jacobian Matrix of <img src="https://render.githubusercontent.com/render/math?math=F%3AR%5En%5Cto%20R%5Em">               |
+|[ensemble](#ensemble)                |Aggregated Estimates for "Difficult" Estimations                                                                          |
 
 ## ``derivest``
 ``derivest.derivest(fun, x, par = None, **kwargs)``
