@@ -8,7 +8,7 @@ import warnings
 lstsq = np.linalg.lstsq
 
 # Default values for keyword arguments:
-__kwargs = {"deriv_order": 1,
+defaults = {"deriv_order": 1,
             "fixed_step": None,
             "max_step": 1.0,
             "method_order": 4,
@@ -102,7 +102,7 @@ def derivest(fun, x, par = None, **kwargs):
         
     """
     ##### DETERMINE PARAMETER VALUES #####
-    p = __kwargs.copy() # Start with default values.
+    p = defaults.copy() # Start with default values.
     for key in kwargs:
         if key not in p: raise TypeError("derivest() got an unrecognized "
                                          "keyword argument: %s" % key)
