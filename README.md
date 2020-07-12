@@ -7,4 +7,4 @@ The main routine is ``derivest.derivest``, which implements a finite difference 
 1. The ``max_step`` parameter now functions on the basis of absolute step size, rather than a multiple of the magnitude of the location of differentiation. This helps prevent certain round-off errors from occuring near the origin, but the value of ``max_step`` may need to be increased when differentiating at points where the function changes rapidly.
 2. In view of numerical idiosyncrasies observed when using the original MATLAB version, a new method (``ensemble``) has been added that allows aggregated evaluation of the "base" methods in order to yield more accurate estimates than a single computation.
 
-At the moment, there is a bug in the routine used for the uncentered finite difference schemes (``"style" in ["forward", "backward"]``).
+At the moment, there is a bug in the routine used for the uncentered (``"style" in ["forward", "backward"]``) finite difference schemes.
